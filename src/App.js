@@ -23,7 +23,7 @@ function App() {
           </Navbar>
         </header>
         <main>
-          <Container>
+          <Container className="mt-3">
             <Switch>
               <Route path="/product/:slug"> <ProductScreen /> </Route>
               <Route path="/" > <HomeScreen /></Route>
