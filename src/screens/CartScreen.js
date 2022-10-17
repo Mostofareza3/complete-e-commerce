@@ -3,11 +3,12 @@ import React from 'react';
 import { useContext } from 'react';
 import { Row, Col, ListGroup, Button, Card } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import MessageBox from '../components/MessageBox';
 import { Store } from './../context/Store';
 
 const CartScreen = () => {
+    const history = useHistory();
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { cart: { cartItems } } = state;
 
@@ -25,6 +26,9 @@ const CartScreen = () => {
 
     const removeItemHandler = (item) => {
         ctxDispatch({ type: 'CART_REMOVE_ITEM', payload: item })
+    }
+    const checkoutHandler = () => {
+        history.push('/signin?redirect=/shipping');
     }
     return (
         <div>
@@ -88,6 +92,7 @@ const CartScreen = () => {
                                 <ListGroup.Item>
                                     <div className="d-grid">
                                         <Button
+                                            onClick={checkoutHandler}
                                             type="button"
                                             variant="primary"
                                             disabled={cartItems.length === 0}
