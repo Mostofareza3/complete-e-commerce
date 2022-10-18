@@ -13,6 +13,7 @@ import { Badge, Nav } from "react-bootstrap";
 import { useContext } from "react";
 import { Store } from "./context/Store";
 import CartScreen from "./screens/CartScreen";
+import SigninScreen from "./screens/SigninScreen";
 
 function App() {
 
@@ -46,6 +47,7 @@ function App() {
             <Switch>
               <Route path="/product/:slug"> <ProductScreen /> </Route>
               <Route path="/cart" > <CartScreen /></Route>
+              <Route path="/signin" > <SigninScreen /></Route>
               <Route path="/" > <HomeScreen /></Route>
             </Switch>
           </Container>
