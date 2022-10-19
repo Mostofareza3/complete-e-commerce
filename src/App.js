@@ -9,20 +9,28 @@ import {
 } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/ProductScreen";
-import { Badge, Nav } from "react-bootstrap";
+import { Badge, Nav, NavDropdown } from "react-bootstrap";
 import { useContext } from "react";
 import { Store } from "./context/Store";
 import CartScreen from "./screens/CartScreen";
 import SigninScreen from "./screens/SigninScreen";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
-  const { state } = useContext(Store);
-  const { cart } = state;
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { cart, userInfo } = state;
+
+  const signoutHandler = () => {
+    ctxDispatch({ type: 'USER_SIGNOUT' });
+    localStorage.removeItem('userInfo');
+  }
 
   return (
     <Router>
       <div className="d-flex flex-column site-container">
+        <ToastContainer position="bottom-center" limit={1} />
         <header >
           <Navbar bg="dark" variant="dark">
             <Container>
@@ -38,6 +46,22 @@ function App() {
                     )
                   }
                 </Link>
+                {userInfo ? (
+                  <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
+                    <LinkContainer to="/profile">
+                      <NavDropdown.Item>User Profile</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/orderhistory">
+                      <NavDropdown.Item>Order History</NavDropdown.Item>
+                    </LinkContainer>
+                    <NavDropdown.Divider />
+                    <Link to="#signout" className="dropdown-item" onClick={signoutHandler}>
+                      Sign Out
+                    </Link>
+                  </NavDropdown>
+                ) : (
+                  <Link to="/signin" className="nav-link">Sign In</Link>
+                )}
               </Nav>
             </Container>
           </Navbar>
