@@ -5,6 +5,7 @@ import { Row, Col, ListGroup, Button, Card } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { Link, useHistory } from 'react-router-dom';
 import MessageBox from '../components/MessageBox';
+import { BASE_URL } from '../utils';
 import { Store } from './../context/Store';
 
 const CartScreen = () => {
@@ -13,7 +14,7 @@ const CartScreen = () => {
     const { cart: { cartItems } } = state;
 
     const updateCartHandler = async (item, quantity) => {
-        const { data } = await axios.get(`http://localhost:5000/api/products/${item._id}`);
+        const { data } = await axios.get(`${BASE_URL}/api/products/${item._id}`);
         if (data.countInStock < quantity) {
             window.alert('Sorry! Product is out of stock!');
             return;

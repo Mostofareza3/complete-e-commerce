@@ -1,16 +1,38 @@
-import React, { useContext, useEffect } from 'react';
+import Axios from 'axios';
+import React, { useContext, useEffect, useReducer } from 'react';
 import { Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
 import { Link, useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import CheckoutSteps from '../components/CheckoutSteps';
+import LoadingBox from '../components/LoadingBox';
 import { Store } from './../context/Store';
+import { BASE_URL, getError } from './../utils';
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'CREATE_REQUEST':
+            return { ...state, loading: true };
+        case 'CREATE_SUCCESS':
+            return { ...state, loading: false };
+        case 'CREATE_FAIL':
+            return { ...state, loading: false }
+        default:
+            return state;
+    }
+}
 
 const PlaceOrderScreen = () => {
 
     const history = useHistory();
+
+    const [{ loading }, dispatch] = useReducer(reducer, {
+        loading: false,
+    })
+
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { cart, userInfo } = state;
-    console.log(cart);
+    // console.log(cart);
     const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100;
     cart.itemsPrice = round2(
         cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
@@ -21,7 +43,33 @@ const PlaceOrderScreen = () => {
     cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
 
     const placeOrderHandler = async () => {
-
+        try {
+            dispatch({ type: 'CREATE_REQUEST' });
+            const { data } = await Axios.post(`${BASE_URL}/api/orders`,
+                {
+                    orderItems: cart.cartItems,
+                    shippingAddress: cart.shippingAddress,
+                    paymentMethod: cart.paymentMethod,
+                    itemsPrice: cart.itemsPrice,
+                    shippingPrice: cart.shippingPrice,
+                    taxPrice: cart.taxPrice,
+                    totalPrice: cart.totalPrice,
+                },
+                {
+                    headers: {
+                        authorization: `Bearer ${userInfo.token}`
+                    }
+                }
+            );
+            ctxDispatch({ type: 'CART_CLEAR' });
+            dispatch({ type: 'CREATE_SUCCESS' });
+            localStorage.removeItem('cartItems');
+            history.push(`/order/${data.order._id}`)
+        }
+        catch (error) {
+            dispatch({ type: 'CREATE_FAIL' });
+            toast.error(getError(error))
+        }
     }
 
     useEffect(() => {
@@ -44,7 +92,7 @@ const PlaceOrderScreen = () => {
                             <Card.Title>Shipping</Card.Title>
                             <Card.Text>
                                 <strong>Name:</strong> {cart.shippingAddress.fullName} <br />
-                                <strong>Name:</strong> {cart.shippingAddress.address},
+                                <strong>Address:</strong> {cart.shippingAddress.address},
                                 {cart.shippingAddress.city},{cart.shippingAddress.postalCode},
                                 {cart.shippingAddress.country}
                             </Card.Text>
@@ -124,6 +172,7 @@ const PlaceOrderScreen = () => {
                                             Place Order
                                         </Button>
                                     </div>
+                                    {loading && <LoadingBox />}
                                 </ListGroup.Item>
                             </ListGroup>
                         </Card.Body>

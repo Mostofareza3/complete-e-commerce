@@ -20,6 +20,7 @@ import ShippingAddressScreen from "./screens/ShippingAddressScreen";
 import SignupScreen from "./screens/SignupScreen";
 import PaymentMethodScreen from "./screens/PaymentMethodScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
+import OrderScreen from "./screens/OrderScreen";
 
 function App() {
 
@@ -80,6 +81,7 @@ function App() {
               <Route path="/signin" > <SigninScreen /></Route>
               <Route path="/signup" > <SignupScreen /></Route>
               <Route path="/placeorder" > <PlaceOrderScreen /></Route>
+              <Route path="/order/:id" > <OrderScreen /></Route>
               <Route path="/shipping" > <ShippingAddressScreen /></Route>
               <Route path="/payment" > <PaymentMethodScreen /></Route>
               <Route path="/" > <HomeScreen /></Route>

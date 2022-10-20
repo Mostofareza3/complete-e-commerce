@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 import { Helmet } from 'react-helmet-async';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getError } from '../utils';
+import { BASE_URL, getError } from '../utils';
 import { Store } from './../context/Store';
 
 const SignupScreen = () => {
@@ -28,7 +28,7 @@ const SignupScreen = () => {
             return;
         }
         try {
-            const { data } = await axios.post(`http://localhost:5000/api/users/signup`, {
+            const { data } = await axios.post(`${BASE_URL}/api/users/signup`, {
                 name,
                 email,
                 password
