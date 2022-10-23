@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Store } from '../context/Store';
 
 const ShippingAddressScreen = () => {
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { userInfo, cart: { shippingAddress } } = state;
-    const history = useHistory();
+    console.log(shippingAddress);
+    const navigate = useNavigate();
     const [fullName, setFullName] = useState(shippingAddress.fullName || '');
     const [address, setAddress] = useState(shippingAddress.address || '');
     const [city, setCity] = useState(shippingAddress.city || '');
@@ -33,13 +34,13 @@ const ShippingAddressScreen = () => {
             postalCode,
             country
         }));
-        history.push('/payment');
+        navigate('/payment');
     };
     useEffect(() => {
         if (!userInfo) {
-            history.push('/signin?redirect=/shipping')
+            navigate('/signin?redirect=/shipping')
         }
-    }, [userInfo, history])
+    }, [userInfo, navigate])
     return (
         <div>
             <Helmet>

@@ -3,13 +3,13 @@ import React from 'react';
 import { useContext } from 'react';
 import { Row, Col, ListGroup, Button, Card } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import MessageBox from '../components/MessageBox';
 import { BASE_URL } from '../utils';
 import { Store } from './../context/Store';
 
 const CartScreen = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { cart: { cartItems } } = state;
 
@@ -29,7 +29,7 @@ const CartScreen = () => {
         ctxDispatch({ type: 'CART_REMOVE_ITEM', payload: item })
     }
     const checkoutHandler = () => {
-        history.push('/signin?redirect=/shipping');
+        navigate('/signin?redirect=/shipping');
     }
     return (
         <div>

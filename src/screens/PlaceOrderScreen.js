@@ -2,7 +2,7 @@ import Axios from 'axios';
 import React, { useContext, useEffect, useReducer } from 'react';
 import { Row, Col, Card, ListGroup, Button } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import CheckoutSteps from '../components/CheckoutSteps';
 import LoadingBox from '../components/LoadingBox';
@@ -24,8 +24,7 @@ const reducer = (state, action) => {
 
 const PlaceOrderScreen = () => {
 
-    const history = useHistory();
-
+    const navigate = useNavigate();
     const [{ loading }, dispatch] = useReducer(reducer, {
         loading: false,
     })
@@ -64,7 +63,7 @@ const PlaceOrderScreen = () => {
             ctxDispatch({ type: 'CART_CLEAR' });
             dispatch({ type: 'CREATE_SUCCESS' });
             localStorage.removeItem('cartItems');
-            history.push(`/order/${data.order._id}`)
+            navigate(`/order/${data.order._id}`)
         }
         catch (error) {
             dispatch({ type: 'CREATE_FAIL' });
@@ -74,9 +73,9 @@ const PlaceOrderScreen = () => {
 
     useEffect(() => {
         if (!cart.paymentMethod) {
-            history.push('/payment')
+            navigate('/payment')
         }
-    }, [cart, history])
+    }, [cart, navigate])
 
     return (
         <div>

@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { Helmet } from 'react-helmet-async';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { Store } from './../context/Store';
 
 const PaymentMethodScreen = () => {
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const { state, dispatch: ctxDispatch } = useContext(Store);
     const { cart: { shippingAddress, paymentMethod } } = state;
     // console.log(paymentMethod);
@@ -15,15 +15,15 @@ const PaymentMethodScreen = () => {
 
     useEffect(() => {
         if (!shippingAddress.address) {
-            history.push('/shipping')
+            navigate('/shipping')
         }
-    }, [shippingAddress, history, paymentMethod])
+    }, [shippingAddress, navigate, paymentMethod])
 
     const submitHandler = (e) => {
         e.preventDefault();
         ctxDispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentMethodName });
         localStorage.setItem('paymentMethod', paymentMethodName);
-        history.push('/placeorder');
+        navigate('/placeorder');
     }
     return (
         <div>

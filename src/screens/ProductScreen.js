@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useReducer } from 'react';
 import axios from 'axios';
 import { Row, Col, ListGroup, Card, Badge, Button } from 'react-bootstrap';
@@ -25,7 +25,7 @@ const reducer = (state, action) => {
 }
 
 const ProductScreen = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const params = useParams();
     const { slug } = params;
     const [{ loading, error, product }, dispatch] = useReducer(reducer, {
@@ -61,7 +61,7 @@ const ProductScreen = () => {
             type: 'CART_ADD_ITEM',
             payload: { ...product, quantity }
         });
-        history.push('/cart')
+        navigate('/cart')
     }
 
     return (

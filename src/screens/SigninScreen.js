@@ -3,13 +3,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
 import { Helmet } from 'react-helmet-async';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { BASE_URL, getError } from '../utils';
 import { Store } from './../context/Store';
 
 const SigninScreen = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const { search } = useLocation();
     const redirectInUrl = new URLSearchParams(search).get('redirect');
     const redirect = redirectInUrl ? redirectInUrl : '/';
@@ -28,7 +28,7 @@ const SigninScreen = () => {
             });
             ctxDispatch({ type: 'USER_SIGNIN', payload: data });
             localStorage.setItem('userInfo', JSON.stringify(data));
-            history.push(redirect || '/');
+            navigate(redirect || '/');
         } catch (error) {
             toast.error(getError(error))
         }
@@ -36,9 +36,9 @@ const SigninScreen = () => {
 
     useEffect(() => {
         if (userInfo) {
-            history.push(redirect)
+            navigate(redirect)
         }
-    }, [redirect, history, userInfo])
+    }, [redirect, navigate, userInfo])
 
     return (
         <Container className="small-container">

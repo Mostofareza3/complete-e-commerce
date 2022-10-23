@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useReducer } from 'react';
-import { Link, useHistory, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
@@ -34,7 +34,7 @@ const reducer = (state, action) => {
 
 const OrderScreen = () => {
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const params = useParams();
     const { id: orderId } = params;
     const { state } = useContext(Store);
@@ -102,7 +102,7 @@ const OrderScreen = () => {
             }
         }
         if (!userInfo) {
-            return history.push('/login')
+            return navigate('/login')
         }
         if (!order._id || successPay || (order._id && order._id !== orderId)) {
             fetchOrder();
@@ -126,7 +126,7 @@ const OrderScreen = () => {
             }
             loadPayPalScript();
         }
-    }, [userInfo, history, order._id, orderId, paypalDispatch, successPay])
+    }, [userInfo, navigate, order._id, orderId, paypalDispatch, successPay])
 
     return (
         <>
