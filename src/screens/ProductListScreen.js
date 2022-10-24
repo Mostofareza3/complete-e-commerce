@@ -30,6 +30,14 @@ const reducer = (state, action) => {
             return { ...state, loadingCreate: false };
         case 'CREATE_FAIL':
             return { ...state, loadingCreate: false };
+        case 'DELETE_REQUEST':
+            return { ...state, loadingDelete: true, successDelete: false };
+        case 'DELETE_SUCCESS':
+            return { ...state, loadingDelete: false, successDelete: true };
+        case 'DELETE_FAIL':
+            return { ...state, loadingDelete: false, successDelete: false };
+        case 'DELETE_RESET':
+            return { ...state, loadingDelete: false, successDelete: false };
         default:
             return state;
     }
@@ -38,7 +46,7 @@ const ProductListScreen = () => {
 
     const navigate = useNavigate();
 
-    const [{ loading, error, products, pages, loadingCreate }, dispatch] = useReducer(reducer, {
+    const [{ loading, error, products, pages, loadingCreate, loadingDelete, successDelete }, dispatch] = useReducer(reducer, {
         loading: true,
         error: '',
     });
@@ -64,9 +72,14 @@ const ProductListScreen = () => {
             } catch (error) {
                 dispatch({ type: 'FETCH_FAIL', payload: getError(error) })
             }
+        };
+        if (successDelete) {
+            dispatch({ type: 'DELETE_RESET' });
         }
-        fetchData();
-    }, [page, userInfo.token]);
+        else {
+            fetchData();
+        }
+    }, [page, userInfo.token, successDelete]);
 
     const createHandler = async () => {
         if (window.confirm('Do you want to create?')) {
@@ -84,6 +97,21 @@ const ProductListScreen = () => {
             } catch (error) {
                 toast.error(getError(error));
                 dispatch({ type: 'CREATE_FAIL' })
+            }
+        }
+    };
+
+    const deleteHandler = async (product) => {
+        if (window.confirm('Do you want to delete?')) {
+            try {
+                await axios.delete(`${BASE_URL}/api/products/${product._id}`, {
+                    headers: { authorization: `Bearer ${userInfo.token}` }
+                });
+                toast.success('Product Deleted successfully');
+                dispatch({ type: 'DELETE_SUCCESS' });
+            } catch (error) {
+                toast.error(getError(error));
+                dispatch({ type: 'DELETE_FAIL' });
             }
         }
     };
@@ -108,6 +136,7 @@ const ProductListScreen = () => {
             </Row>
 
             {loadingCreate && <LoadingBox />}
+            {loadingDelete && <LoadingBox />}
 
             {loading ?
                 (<LoadingBox />) :
@@ -139,6 +168,13 @@ const ProductListScreen = () => {
                                                 onClick={() => navigate(`/admin/product/${product._id}`)}
                                             >
                                                 Edit
+                                            </Button> &nbsp;
+                                            <Button
+                                                type="button"
+                                                variant="light"
+                                                onClick={() => deleteHandler(product)}
+                                            >
+                                                Delete
                                             </Button>
                                         </td>
                                     </tr>

@@ -7,7 +7,7 @@ import { Store } from './../context/Store';
 import { BASE_URL, getError } from './../utils';
 import Axios from 'axios';
 import { Helmet } from 'react-helmet-async';
-import { Card, Col, ListGroup, Row } from 'react-bootstrap';
+import { Button, Card, Col, ListGroup, Row } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
 const reducer = (state, action) => {
@@ -25,7 +25,15 @@ const reducer = (state, action) => {
         case 'PAY_FAIL':
             return { ...state, loadingPay: false, errorPay: action.payload }
         case 'PAY_RESET':
-            return { ...state, loadingPay: false, successPay: false }
+            return { ...state, loadingPay: false, successPay: false };
+        case 'DELIVER_REQUEST':
+            return { ...state, loadingDeliver: true };
+        case 'DELIVER_SUCCESS':
+            return { ...state, loadingDeliver: false, successDeliver: true };
+        case 'DELIVER_FAIL':
+            return { ...state, loadingDeliver: false, errorDeliver: action.payload };
+        case 'DELIVER_RESET':
+            return { ...state, loadingDeliver: false, successDeliver: false }
         default:
             return state
     }
@@ -40,7 +48,7 @@ const OrderScreen = () => {
     const { state } = useContext(Store);
     const { userInfo } = state;
 
-    const [{ loading, error, order, successPay, loadingPay }, dispatch] = useReducer(reducer, {
+    const [{ loading, error, order, successPay, loadingPay, loadingDeliver, successDeliver }, dispatch] = useReducer(reducer, {
         loading: true,
         order: {},
         error: '',
@@ -101,13 +109,18 @@ const OrderScreen = () => {
                 dispatch({ type: 'FETCH_FAIL', payload: getError(err) })
             }
         }
+
         if (!userInfo) {
             return navigate('/login')
-        }
-        if (!order._id || successPay || (order._id && order._id !== orderId)) {
+        };
+
+        if (!order._id || successPay || successDeliver || (order._id && order._id !== orderId)) {
             fetchOrder();
             if (successPay) {
                 dispatch({ type: 'PAY_RESET' })
+            }
+            if (successDeliver) {
+                dispatch({ type: 'DELIVER_RESET' })
             }
         }
         else {
@@ -126,7 +139,23 @@ const OrderScreen = () => {
             }
             loadPayPalScript();
         }
-    }, [userInfo, navigate, order._id, orderId, paypalDispatch, successPay])
+    }, [userInfo, navigate, order._id, orderId, paypalDispatch, successPay, successDeliver]);
+
+    const deliverOrderHandler = async () => {
+        try {
+            dispatch({ type: 'DELIVER_REQUEST' });
+            const { data } = await Axios.put(`${BASE_URL}/api/orders/${order._id}/deliver`,
+                {}, {
+                headers: { authorization: `Bearer ${userInfo.token}` }
+            });
+            dispatch({ type: 'DELIVER_SUCCESS', payload: data });
+            toast.success('Order is Delivered');
+
+        } catch (error) {
+            toast.error(getError(error));
+            dispatch({ type: 'DELIVER_FAIL' });
+        }
+    }
 
     return (
         <>
@@ -229,9 +258,22 @@ const OrderScreen = () => {
                                                     </div>
                                                 )
                                                 }
+                                                {loadingPay && <LoadingBox />}
                                             </ListGroup.Item>
                                         )}
-                                        {loadingPay && <LoadingBox />}
+                                        {userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                                            <ListGroup.Item>
+                                                {loadingDeliver && <LoadingBox />}
+                                                <div className="d-grid">
+                                                    <Button
+                                                        type="button"
+                                                        onClick={deliverOrderHandler}
+                                                    >
+                                                        Deliver Order
+                                                    </Button>
+                                                </div>
+                                            </ListGroup.Item>
+                                        )}
                                     </ListGroup>
                                 </Card.Body>
                             </Card>
