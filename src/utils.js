@@ -4,4 +4,4 @@ export const getError = (error) => {
         : error.message;
 }
 
-export const BASE_URL = 'http://localhost:5000';
+export const BASE_URL = 'https://amazon-backend-d1vr.onrender.com';
