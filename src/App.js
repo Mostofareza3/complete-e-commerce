@@ -1,12 +1,7 @@
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
-import { LinkContainer } from 'react-router-bootstrap';
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Routes,
-} from "react-router-dom";
+import { LinkContainer } from "react-router-bootstrap";
+import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/ProductScreen";
 import { Badge, Button, Nav, NavDropdown } from "react-bootstrap";
@@ -15,7 +10,7 @@ import { Store } from "./context/Store";
 import CartScreen from "./screens/CartScreen";
 import SigninScreen from "./screens/SigninScreen";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import ShippingAddressScreen from "./screens/ShippingAddressScreen";
 import SignupScreen from "./screens/SignupScreen";
 import PaymentMethodScreen from "./screens/PaymentMethodScreen";
@@ -30,7 +25,7 @@ import SearchScreen from "./screens/SearchScreen";
 import { NavLink } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import DashboardScreen from "./screens/DashboardScreen";
-import AdminRoute from './components/AdminRoute';
+import AdminRoute from "./components/AdminRoute";
 import ProductListScreen from "./screens/ProductListScreen";
 import ProductEditScreen from "./screens/ProductEditScreen";
 import OrderListScreen from "./screens/OrderListScreen";
@@ -38,16 +33,15 @@ import UserListScreen from "./screens/UserListScreen";
 import UserEditScreen from "./screens/UserEditScreen";
 
 function App() {
-
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart, userInfo } = state;
 
   const signoutHandler = () => {
-    ctxDispatch({ type: 'USER_SIGNOUT' });
-    localStorage.removeItem('userInfo');
-    localStorage.removeItem('shippingAddress');
-    localStorage.removeItem('paymentMethod');
-    window.location.href = '/signin';
+    ctxDispatch({ type: "USER_SIGNOUT" });
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("shippingAddress");
+    localStorage.removeItem("paymentMethod");
+    window.location.href = "/signin";
   };
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -57,22 +51,25 @@ function App() {
     const fetchCategories = async () => {
       try {
         const { data } = await axios.get(`${BASE_URL}/api/products/categories`);
-        setCategories(data)
+        setCategories(data);
       } catch (error) {
-        toast.error(getError(error))
+        toast.error(getError(error));
       }
-    }
+    };
     fetchCategories();
-  }, [])
+  }, []);
 
   return (
     <Router>
       <div
-        className={isSidebarOpen ?
-          "d-flex flex-column site-container active-cont"
-          : "d-flex flex-column site-container"}>
+        className={
+          isSidebarOpen
+            ? "d-flex flex-column site-container active-cont"
+            : "d-flex flex-column site-container"
+        }
+      >
         <ToastContainer position="bottom-center" limit={1} />
-        <header >
+        <header>
           <Navbar bg="dark" variant="dark" expand="lg">
             <Container>
               <Button
@@ -90,11 +87,11 @@ function App() {
                 <Nav className="me-auto w-100 justify-content-end">
                   <Link to="/cart" className="nav-link">
                     Cart
-                    {
-                      cart.cartItems.length > 0 && (
-                        <Badge pill bg="danger">{cart.cartItems.reduce((a, c) => a + c.quantity, 0)}</Badge>
-                      )
-                    }
+                    {cart.cartItems.length > 0 && (
+                      <Badge pill bg="danger">
+                        {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                      </Badge>
+                    )}
                   </Link>
                   {userInfo ? (
                     <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
@@ -105,12 +102,18 @@ function App() {
                         <NavDropdown.Item>Order History</NavDropdown.Item>
                       </LinkContainer>
                       <NavDropdown.Divider />
-                      <Link to="#signout" className="dropdown-item" onClick={signoutHandler}>
+                      <Link
+                        to="#signout"
+                        className="dropdown-item"
+                        onClick={signoutHandler}
+                      >
                         Sign Out
                       </Link>
                     </NavDropdown>
                   ) : (
-                    <Link to="/signin" className="nav-link">Sign In</Link>
+                    <Link to="/signin" className="nav-link">
+                      Sign In
+                    </Link>
                   )}
                   {userInfo && userInfo.isAdmin && (
                     <NavDropdown title="Admin" id="admin-nav-dropdown">
@@ -134,9 +137,10 @@ function App() {
           </Navbar>
         </header>
         <div
-          className={isSidebarOpen ?
-            "active-nav side-navbar d-flex justify-content-between flex-wrap flex-column"
-            : "side-navbar d-flex justify-content-between flex-wrap flex-column"
+          className={
+            isSidebarOpen
+              ? "active-nav side-navbar d-flex justify-content-between flex-wrap flex-column"
+              : "side-navbar d-flex justify-content-between flex-wrap flex-column"
           }
         >
           <Nav className="flex-column text-white w-100 p-2">
@@ -163,69 +167,93 @@ function App() {
               <Route path="/search" element={<SearchScreen />} />
               <Route path="/signin" element={<SigninScreen />} />
               <Route path="/signup" element={<SignupScreen />} />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <ProfileScreen />
-                </ProtectedRoute>
-              } />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfileScreen />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/placeorder" element={<PlaceOrderScreen />} />
-              <Route path="/order/:id" element={
-                <ProtectedRoute>
-                  <OrderScreen />
-                </ProtectedRoute>
-              } />
-              <Route path="/orderhistory" element={
-                <ProtectedRoute>
-                  <OrderHistoryScreen />
-                </ProtectedRoute>
-              } />
+              <Route
+                path="/order/:id"
+                element={
+                  <ProtectedRoute>
+                    <OrderScreen />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/orderhistory"
+                element={
+                  <ProtectedRoute>
+                    <OrderHistoryScreen />
+                  </ProtectedRoute>
+                }
+              />
               <Route path="/shipping" element={<ShippingAddressScreen />} />
               <Route path="/payment" element={<PaymentMethodScreen />} />
 
               {/* Admin Routes */}
-              <Route path="/admin/dashboard" element={
-                <AdminRoute>
-                  <DashboardScreen />
-                </AdminRoute>
-              } />
-              <Route path="/admin/products" element={
-                <AdminRoute>
-                  <ProductListScreen />
-                </AdminRoute>
-              } />
-              <Route path="/admin/orders" element={
-                <AdminRoute>
-                  <OrderListScreen />
-                </AdminRoute>
-              } />
-              <Route path="/admin/product/:id" element={
-                <AdminRoute>
-                  <ProductEditScreen />
-                </AdminRoute>
-              } />
-              <Route path="/admin/user/:id" element={
-                <AdminRoute>
-                  <UserEditScreen />
-                </AdminRoute>
-              } />
-              <Route path="/admin/users" element={
-                <AdminRoute>
-                  <UserListScreen />
-                </AdminRoute>
-              } />
-
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <AdminRoute>
+                    <DashboardScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/products"
+                element={
+                  <AdminRoute>
+                    <ProductListScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/orders"
+                element={
+                  <AdminRoute>
+                    <OrderListScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/product/:id"
+                element={
+                  <AdminRoute>
+                    <ProductEditScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/user/:id"
+                element={
+                  <AdminRoute>
+                    <UserEditScreen />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <AdminRoute>
+                    <UserListScreen />
+                  </AdminRoute>
+                }
+              />
 
               <Route path="/" element={<HomeScreen />} />
             </Routes>
           </Container>
-
         </main>
         <footer>
           <div className="text-center">All rights reserved Mostofa Reza</div>
         </footer>
       </div>
     </Router>
-
   );
 }
 

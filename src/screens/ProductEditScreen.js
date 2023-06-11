@@ -108,7 +108,7 @@ export default function ProductEditScreen() {
                     description,
                 },
                 {
-                    headers: { Authorization: `Bearer ${userInfo.token}` },
+                    headers: { authorization: `Bearer ${userInfo.token}` },
                 }
             );
             dispatch({
@@ -219,7 +219,7 @@ export default function ProductEditScreen() {
                         </ListGroup>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="additionalImageFile">
-                        <Form.Label>Upload Aditional Image</Form.Label>
+                        <Form.Label>Upload Additional Image</Form.Label>
                         <Form.Control
                             type="file"
                             onChange={(e) => uploadFileHandler(e, true)}
