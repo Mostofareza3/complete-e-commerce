@@ -8,6 +8,7 @@ import MessageBox from "./../components/MessageBox";
 import { BASE_URL } from "../utils";
 import "../styles/HomeScreen.css";
 import ControlledCarousel from "../components/Carosel";
+import PlaceholderCard from "../components/Placeolder";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -49,13 +50,26 @@ const HomeScreen = () => {
       <div className="products">
         <h1 className="heading">Featured Products</h1>
         {loading ? (
-          <LoadingBox />
+          <>
+            <h5 className="text-info mx-3 d-block">
+              Sorry! Taking Long time for server response. It is just because
+              server deployed on Render Free server hosting platform.
+            </h5>
+            <LoadingBox />
+            <Row>
+              {[1, 2, 3, 4, 5, 6].map((num) => (
+                <Col key={num} sm={6} md={4} lg={4}>
+                  <PlaceholderCard />
+                </Col>
+              ))}
+            </Row>
+          </>
         ) : error ? (
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
           <Row>
             {products.map((product) => (
-              <Col key={product.slug} sm={6} md={4} lg={4} className="mb-3">
+              <Col key={product._id} sm={6} md={4} lg={4} className="mb-3">
                 <Product product={product}></Product>
               </Col>
             ))}

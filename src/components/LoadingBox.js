@@ -4,9 +4,11 @@ import "../styles/HomeScreen.css";
 
 const LoadingBox = () => {
   return (
-    <Spinner animation="border spinner " role="status">
-      <span className="visually-hidden">Loading...</span>
-    </Spinner>
+    <div className="d-block">
+      <Spinner animation="border spinner  d-block " role="status">
+        <span className="visually-hidden d-block">Loading...</span>
+      </Spinner>
+    </div>
   );
 };
 

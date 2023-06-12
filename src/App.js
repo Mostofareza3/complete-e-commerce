@@ -68,7 +68,7 @@ function App() {
             : "d-flex flex-column site-container"
         }
       >
-        <ToastContainer position="bottom-center" limit={1} />
+        <ToastContainer position="top-center" limit={1} />
         <header>
           <Navbar bg="dark" variant="dark" expand="lg">
             <Container>
@@ -139,21 +139,23 @@ function App() {
         <div
           className={
             isSidebarOpen
-              ? "active-nav side-navbar d-flex justify-content-between flex-wrap flex-column"
+              ? "active-nav side-navbar bg-light d-flex justify-content-between flex-wrap flex-column"
               : "side-navbar d-flex justify-content-between flex-wrap flex-column"
           }
         >
-          <Nav className="flex-column text-white w-100 p-2">
-            <Nav.Item>
-              <strong>Categories</strong>
+          <Nav className="flex-column align-items-baseline align-content-center w-100 p-2">
+            <Nav.Item className="bg-dark w-100 p-2 rounded text-bold text-uppercase text-center text-info">
+              Categories
             </Nav.Item>
             {categories.map((category) => (
-              <Nav.Item key={category}>
+              <Nav.Item key={category} className="w-100">
                 <NavLink
+                  className={`text-decoration-none  text-uppercase pl-4 d-flex flex-row justify-content-between align-items-center d-inline mt-3  hover:text-decoration-underline`}
                   to={`/search?category=${category}`}
                   onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 >
                   {category}
+                  <div> {">"} </div>
                 </NavLink>
               </Nav.Item>
             ))}
