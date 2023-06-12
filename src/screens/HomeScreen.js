@@ -48,7 +48,7 @@ const HomeScreen = () => {
       </Helmet>
       <ControlledCarousel />
       <div className="products">
-        <h1 className="heading">Featured Products</h1>
+        <h2 className="heading">Featured Products</h2>
         {loading ? (
           <>
             <h5 className="text-info mx-3 d-block">
